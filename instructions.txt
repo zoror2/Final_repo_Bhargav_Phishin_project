@@ -1,0 +1,166 @@
+Got it 👍 — you want a clear, step-by-step instructions.txt that your Microsoft Copilot in VSCode can follow to set everything up:
+
+Virtual environment
+
+Sandbox browsing (safe way to collect events from URLs)
+
+Dataset creation (from both PhishTank phishing URLs + legit URLs)
+
+Training the LSTM on Kaggle
+
+Here’s how I’d structure the file:
+
+📄 instructions.txt
+1. Setup the Environment
+
+Create a Python virtual environment:
+
+python -m venv venv
+source venv/bin/activate   # Linux/Mac
+venv\Scripts\activate      # Windows
+
+
+Install required libraries:
+
+pip install selenium pandas numpy scikit-learn tensorflow keras
+pip install webdriver-manager requests
+
+
+(You may add playwright or pyppeteer if preferred over Selenium.)
+
+Sandbox environment:
+
+Use Selenium or Playwright inside a controlled environment (VM, Docker, or cloud instance).
+
+This ensures phishing URLs cannot damage your host machine.
+
+“Selenium Sandbox environment” basically means running browsers in isolation.
+
+For safety, never use your personal browser profile.
+
+2. Dataset Preparation
+
+Phishing URLs: Use PhishTank API or download their feed (CSV/JSON).
+
+Legit URLs: Use Alexa/Tranco top domains or Common Crawl data.
+
+Store them in two files:
+
+phish_urls.csv → label = 1
+
+legit_urls.csv → label = 0
+
+Merge into a single dataset with columns:
+
+url, label
+
+3. Event Logging (Building Behavioral Dataset)
+
+Use Selenium to open each URL in sandbox.
+
+Record events such as:
+
+Number of redirects
+
+TLS/SSL certificate validity
+
+Number of external domains loaded
+
+Presence of forms / password fields
+
+Number of scripts/iframes
+
+Time taken for load events
+
+Save each session as JSON:
+
+{
+  "url": "...",
+  "label": 1,
+  "events": [
+    {"event_type": "redirect", "time": 120},
+    {"event_type": "tls_invalid", "time": 220},
+    {"event_type": "form_detected", "time": 500}
+  ]
+}
+
+
+Collect both phishing + legit URLs → balanced dataset is critical.
+
+Training only on “good” or only on “bad” leads to poor generalization. You need both classes for the model to learn the difference.
+
+4. Preprocessing for LSTM
+
+Convert event types into numeric IDs (redirect=1, tls_invalid=2, etc.).
+
+Normalize numeric fields (time gaps, counts).
+
+Pad/truncate sequences to fixed length (e.g., 100 timesteps).
+
+Split dataset → Train (70%), Validation (15%), Test (15%).
+
+5. Building the LSTM Model
+
+Input: sequence of event vectors.
+
+Layers:
+
+Embedding (for event IDs)
+
+LSTM (or BiLSTM) layer(s)
+
+Dropout for regularization
+
+Dense → Sigmoid output (binary classification).
+
+Loss: Binary cross-entropy
+
+Optimizer: Adam
+
+Metrics: Accuracy, Precision, Recall, F1-score, ROC-AUC.
+
+6. Training on Kaggle
+
+Upload dataset (events_dataset.json or .csv) to Kaggle.
+
+Write training notebook:
+
+Load dataset
+
+Preprocess sequences
+
+Define LSTM model
+
+Train with early stopping
+
+Save model (model.h5).
+
+Evaluate on test set and plot confusion matrix & ROC curve.
+
+7. Deployment / Testing
+
+Export model (model.h5).
+
+In your browser extension pipeline:
+
+When a URL is opened, log events in real time.
+
+Preprocess into same vectorized format.
+
+Pass sequence to LSTM.
+
+Output probability of phishing.
+
+If score > threshold (say 0.8) → warn user.
+
+✅ Summary:
+
+Use both good + bad URLs (PhishTank + Tranco).
+
+Sandbox Selenium to safely log behaviors.
+
+Convert logs into sequences.
+
+Train an LSTM on Kaggle.
+
+Deploy model in extension for real-time predictions.

@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  selenium-hub:
+    image: selenium/hub:4.15.0
+    container_name: scamify-selenium-hub
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+    environment:
+      - GRID_MAX_SESSION=16
+      - GRID_BROWSER_TIMEOUT=300
+      - GRID_TIMEOUT=300
+    networks:
+      - scamify-network
+
+  selenium-chrome:
+    image: selenium/node-chrome:4.15.0
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - HUB_HOST=selenium-hub
+      - HUB_PORT=4444
+      - NODE_MAX_INSTANCES=4
+      - NODE_MAX_SESSION=4
+    scale: 2
+    networks:
+      - scamify-network
+
+  scamify-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - selenium-hub
+      - selenium-chrome
+    environment:
+      - SELENIUM_GRID_URL=http://selenium-hub:4444/wd/hub
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+      - ./database.db:/app/database.db
+    networks:
+      - scamify-network
+    command: python app.py
+
+networks:
+  scamify-network:
+    driver: bridge
