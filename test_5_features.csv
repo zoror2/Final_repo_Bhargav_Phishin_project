@@ -1,0 +1,6 @@
+url_length,domain_length,path_length,query_length,subdomain_count,dash_count,dot_count,slash_count,at_symbol,is_https,has_ip,has_suspicious_words,has_ssl,ssl_valid,title_length,title_has_suspicious,form_count,input_count,password_fields,link_count,external_links,script_count,image_count,meta_count,text_length,text_has_suspicious,url,label
+25,16,1,0,1,0,2,3,0,1,0,0,1,1,19,0,1,1,0,32,28,8,0,2,487,0,https://pontenyo.web.app/,Phishing
+24,16,0,0,0,0,1,2,0,1,0,0,1,1,39,0,1,2,0,192,50,15,6,10,14182,1,https://ourhairstyle.com,Legitimate
+16,8,0,0,0,0,1,2,0,1,0,0,1,1,5,0,0,0,0,0,0,0,1,7,0,0,https://neads.ca,Legitimate
+18,10,0,0,0,0,1,2,0,1,0,1,1,1,6,1,1,8,0,26,24,19,10,3,344,1,https://google.com,Legitimate
+21,13,0,0,0,0,1,2,0,1,0,1,1,1,61,1,1,1,0,123,49,84,22,30,3112,1,https://microsoft.com,Legitimate
