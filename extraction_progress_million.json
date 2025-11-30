@@ -1,0 +1,12 @@
+{
+  "last_processed_index": 10299,
+  "total_processed": 10894,
+  "successful": 3706,
+  "failed": 7191,
+  "ssl_valid": 9669,
+  "ssl_invalid": 1133,
+  "timeout_errors": 2050,
+  "webdriver_errors": 843,
+  "timestamp": "2025-11-16T14:22:02.901060",
+  "elapsed_hours": 4.786090316242642
+}
